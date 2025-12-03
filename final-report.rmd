@@ -1,0 +1,8 @@
+---
+title: "MATH 3MB3 Final Project"
+author: "Sofian Khan, Muhammad Khan, Stephem Zanette, Faris Abuain"
+date: "2025-12-12"
+output: pdf_document
+---
+
+Set a different date?
