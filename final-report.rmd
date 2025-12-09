@@ -5,4 +5,13 @@ date: "2025-12-12"
 output: pdf_document
 ---
 
-Set a different date?
+## Introduction
+
+*Should be approximately 3 to 5 paragraphs
+
+Introduction: Discuss research literature on different drug delivery methods, past research on the comparative safety and efficacy of IV and pill dosage for real-world. "Really focus on what the reader needs to
+know to understand your work, and be interested and excited by it".
+ 
+At the end of the introduction, introduce research question.
+ 
+MORE FORMALIZED RESEARCH QUESTION: Is an IV or slow-release pill dosing strategy more effective for patients with chronic pain relief needs vs acute pain relief needs [doesn't have to be pain relief, but this makes it more specific]? What is the comparative safety of both methods for patients of differing metabolisms / tolerances / something else {can we integrate this into one question??}.
