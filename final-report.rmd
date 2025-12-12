@@ -16,3 +16,54 @@ Extended-release pills have also shown significant promise for the treatment of 
 Recent reviews of the medical literature on the safety and efficacy of long-acting/extended-release opioids for chronic pain have suggested that much of the current body of research is of poor quality and limited scope [reference 7](https://pubmed.ncbi.nlm.nih.gov/24115561/),[reference 8](https://www.ohsu.edu/sites/default/files/2019-01/Opioids_final_report_update-6_Jul_11.pdf). In particular, these reviews emphasize the lack of sufficient statistical evidence to make determinations as to comparative safety and efficacy between classes of extended-release drugs. The literature on the safety and efficacy of IV administration is also lacking, with inconclusive results on the safety and efficacy of intravenous administration of pain medications for chronic pain management [reference 9](https://pubmed.ncbi.nlm.nih.gov/29395284/). Some studies have found that IV administration of ibuprofen (an NSAID) to be effective and well-tolerated in older patients and have suggested IV administration of acetaminophen as a safer alternative to opioids [reference 10](https://www.sciencedirect.com/science/article/pii/S014929182500164X),[reference 11](https://canjhealthtechnol.ca/index.php/cjht/article/view/RC1508/1587).  
 
 The goal of this report is to investigate the dynamics of drug absorption and metabolism for different methods of drug delivery, through a combination of mathematical modelling and numerical simulation. In particular, we will perform a full mathematical analysis of drug dynamics in the body in order to explore the implications for the safety and efficacy of common pain management strategies. The question we seek to investigate is whether extended-release pills or IV administration is a more effective strategy for patients with chronic and/or acute pain, as well as the relative safety of each strategy given patient metabolism and tolerance.
+
+## Model
+
+# Base Model
+
+Our specific goal is to model the rate of accumulation of drug in the body at different dosages, rates of administration, and patient metabolic rates, as well as the total amount of drug in the body at any particular time during administration. The model we use here is agnostic to the specific drug being administered, and so we assume the drug will be metabolized similarly across drug classes. Specifically, we make the simplifying assumption that the rate of clearance is proportional the current amount of drug in the body. 
+
+We have chosen to model the rate of change in the amount of drug in the body as a continuous process, using an ordinary differential equation:
+
+$$
+\frac{dA}{dt} = D(t) - P(A)
+$$
+
+where \(D(t)\) is the dosage at time \(t\) and \(P(A)\) is the processing rate. As stated earlier, in our model we assume that the rate of clearance is proportional to the current amount of drug in the body, i.e.
+
+$$
+P(A) = cA
+$$
+
+for some clearance rate \(c\). This is a simplification, as different classes of drug may be processed at different rates [reference 2.1.1](https://www.merckmanuals.com/professional/clinical-pharmacology/pharmacokinetics/drug-metabolism). Additionally, this does not take into account that drugs may be processed at different rates throughout the day, depending on the stage of the patient’s circadian rythym, other drugs in the body, stomach contents, etc. [reference 2.1.2](https://pmc.ncbi.nlm.nih.gov/articles/PMC7174881/).  
+
+The dosage at time \(t\), \(D(t)\), will be modelled differently for the IV administration and the extended-release pill delivery strategies. For IV, the dosage at time \(t\) is a constant \(r\), the rate of administration. In clinical settings, IV infusions are generally done at a constant rate, so this assumption is valid [reference x](https://www.ncbi.nlm.nih.gov/books/NBK596734/). This results in the model
+
+$$
+\frac{dA}{dt} = r - cA \qquad \text{for } 0 \le t \le h
+$$
+
+and after infusion ends,
+
+$$
+\frac{dA}{dt} = -cA
+$$
+
+For the extended-release pill, we model the dosage at time \(t\) as
+
+$$
+D(t) = D_{\max} e^{-t/h}
+$$
+
+where \(D_{\max}\) is the max dosage. At time \(t = 0\), the dosage will be \(D_{\max}\) and will decrease as time goes on. This models the fact that, from ingestion, less and less of the drug is released into the body as the pill dissolves. We represent this release rate as exponential decay, with the parameter \(h\) modified to approximate different rates of release/absorption. Hence, we obtain the model
+
+$$
+\frac{dA}{dt} = D_{\max} e^{-t/h} - cA
+$$
+
+However, this model ignores that the drug isn’t immediately effective once consumed; it first has to be absorbed the by stomach lining into the bloodstream, a process whose speed is affected by the stomach contents, genetics, and current state of the patient [reference 2.1.2, again(https://pmc.ncbi.nlm.nih.gov/articles/PMC7174881/). Furthemore, this doesn’t take into account that not all of the drug will be absorbed by the patient. This is called the bioavailability of a drug, and varies wildly between different compounds [reference 2.1.3](https://www.ncbi.nlm.nih.gov/books/NBK557852/). Once again, since our model is agnostic to the drug being administered, we simplify by assuming that rate of dosage and rate of absorption are equal, and that no time passes between the release/absorption of the drug and it becoming effective (i.e. acting upon it’s target). 
+
+Note that, for the IV model, our assumption that the drug entering the bloodstream is equivalent to it becoming effective is somewhat supported by the medical literature, as intravenous drug administration is generally considered to provide the most complete drug availability, with minimal delay. [reference 2.1.4](https://www.sciencedirect.com/topics/medicine-and-dentistry/intravenous-drug-administration).  
+
+
+
