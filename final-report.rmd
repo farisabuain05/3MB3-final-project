@@ -211,7 +211,38 @@ $$g'(A) = -c < 0.$$
 
 So, as before, this equilibrium is stable and we can expect to reach it once administration stops, given sufficient time.
 
+#Pill Model
+So, as before, this equilibrium is stable and we can expect to reach it once administration stops, given sufficient time.
 
+The clearance rate is denoted by $c$, and the pill release rate is $D_{\max}$.
+
+We consider the pill model
+\[
+\frac{dA}{dt} = D_{\max} e^{-t/h} - cA(t),
+\]
+with solution
+\[
+A(t) = \frac{D_{\max}}{c - 1/h}\left(e^{-t/h} - e^{-ct}\right).
+\]
+
+Over the interval $[0,h]$ the total dosage is
+\[
+D_{\text{tot,pill}}(0,h)
+= \int_0^h D_{\max} e^{-t/h}\,dt
+= D_{\max} h (1 - e^{-1}).
+\]
+For the intravenous model we have
+\[
+\frac{dA}{dt} = r - cA(t), \quad 0 \le t \le h,
+\]
+with solution
+\[
+A_{\text{IV}}(t) = \frac{r}{c}\bigl(1 - e^{-ct}\bigr),
+\]
+and total dose
+\[
+D_{\text{tot,IV}} = rh.
+\]
 
 
 
