@@ -211,7 +211,7 @@ $$g'(A) = -c < 0.$$
 
 So, as before, this equilibrium is stable and we can expect to reach it once administration stops, given sufficient time.
 
-#Pill Model
+# Pill Model
 So, as before, this equilibrium is stable and we can expect to reach it once administration stops, given sufficient time.
 
 The clearance rate is denoted by $c$, and the pill release rate is $D_{\max}$.
