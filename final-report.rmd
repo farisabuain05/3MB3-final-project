@@ -9,6 +9,8 @@ output:
 bibliography: references.bib
 header-includes:
   - \setlength\bibitemsep{1.5\itemsep}
+  - \usepackage{float}
+  - \floatplacement{figure}{H}
 ---
 
 ## Introduction
@@ -873,8 +875,54 @@ dosing protocols ($r$, $h$, $D_{max}$). Optimal delivery method
 selection requires quantitative analysis of these factors rather than
 qualitative assumptions.
 
+# Model Extension: Pill Absorption Model
+
+While the base model provided a useful first approximation of the oral drug delivery system, its assumption that drug mass enters the bloodstream immediately after ingestion neglects the physiological process of intestinal absorption. An orally administered drug must undergo several sequential processes, including pill disintegration, dissolution of the active ingredient, and absorption through the gastrointestinal tract, before any drug enters systemic circulation [@Rowland2011]. To incorporate these physiologically important mechanisms, we extend the base model by introducing an intermediate absorption compartment, denoted by $S(t)$, which represents the mass of drug present in the stomach and small intestine prior to entering the bloodstream.
+
+The central assumption of this extension is that the transfer of drug from the gut into the bloodstream follows first-order absorption kinetics, meaning that the rate of absorption is proportional to the amount of drug remaining in the gastrointestinal tract [@GibaldiPerrier1982]. This assumption is widely used in pharmacokinetic modelling and provides a reasonable approximation for many orally administered drugs. We denote the absorption rate constant by $k_a$ (hr$^{-1}$), which governs how quickly drug leaves the gut compartment. The bloodstream compartment, denoted by $A(t)$, retains the same first-order clearance process as in the base model, governed by the clearance rate constant $c$ (hr$^{-1}$). Together, these assumptions yield a system of linear differential equations that describe the sequential movement of drug from ingestion, to absorption, and finally to systemic clearance.
+
+The extended model is therefore given by
+
+$$
+\frac{dS}{dt} = -k_a S(t), \qquad \frac{dA}{dt} = k_a S(t) - cA(t),
+$$
+
+with initial conditions $S(0) = S_0$ and $A(0) = 0$, where $S_0$ represents the initial administered dose.
+
+Solving this system yields the explicit solutions
+
+$$
+S(t) = S_0 e^{-k_a t}, \qquad A(t) = \frac{k_a S_0}{c - k_a}\left(e^{-k_a t} - e^{-ct}\right),
+$$
+
+for $c \neq k_a$. The first equation describes the exponential depletion of drug in the gastrointestinal tract due to absorption, while the second captures the competing effects of drug input from the gut and removal through systemic clearance [@Allen2007].
+
+These equations preserve mass balance at the level of the model: every unit of drug leaving the gut compartment enters the bloodstream, and no additional losses are assumed. This simplification allows for a clear interpretation of parameter effects while maintaining a meaningful connection to underlying physiology [@Wagner1971].
+
+The extended model differs from the base model in several important ways. First, it introduces a finite delay in the appearance of drug in the bloodstream, as absorption cannot occur instantaneously. Second, it enables exploration of how variations in the absorption rate constant $k_a$—such as those arising from food effects, disease states, or formulation differences—affect peak concentration, time to peak, and overall drug exposure. Finally, the added structural complexity brings the model closer to established pharmacokinetic frameworks for oral drug delivery [@Wagner1971]. By incorporating an intermediate absorption compartment, the extended model captures a key physiological process absent from the base model and provides a foundation for more realistic predictions of oral drug behaviour.
+
+## Results: Extended Model
+
+To evaluate the impact of introducing an intermediate absorption compartment, we analyzed the extended pill absorption model through numerical simulations. The objectives of this analysis was first, to characterize the baseline dynamics of the extended model, second, to examine how variation in the absorption rate constant $k_a$ influences drug level in the bloodstream; and third, to compare the predictions of the extended model to those of the base model under identical clearance conditions. All simulations were performed over a 12-hour time period using consistent parameter values ($S_0 = 100$ mg, $c = 0.6$ $hr^{-1}$) to allow direct comparison across scenarios.
+
+We first examined the baseline behaviour of the extended model by simulating the time evolution of the gastrointestinal compartment $S(t)$ and the bloodstream compartment $A(t)$. As shown in the Figure Extended model: $S(t)$ and $A(t)$, the amount of drug in the gut decreases monotonically over time, exhibiting exponential decay as the drug is absorbed into the bloodstream. In contrast, the bloodstream drug amount initially increases from zero, reaches a distinct maximum, and then declines as clearance overtakes absorption. The peak in $A(t)$ occurs after a finite delay, reflecting the time required for drug to transfer from the gut compartment into body's circulation. This result demonstrates that the extended model produces qualitatively different dynamics than models in which drug enters the bloodstream instantaneously.
+
+To investigate how intestinal absorption kinetics affect systemic drug levels, we next simulated the extended model for multiple values of the absorption rate constant $k_a$, while keeping all the parameters the same. This analysis was motivated by the question of how differences in absorption speed influence the timing and magnitude of bloodstream drug concentration. As illustrated in the Figure Extended model: effect of absorption rate $k_a$ on $A(t)$, increasing $k_a$ leads to earlier peak times and higher maximum values of $A(t)$, producing sharper and more narrowly peaked concentration curves. On the other hand, smaller values of $k_a$ result in slower rises, later peak times, and broader curves with lower maximum concentrations. These simulations indicate that the absorption rate plays a key role in shaping the temporal profile of drug exposure in the bloodstream.
+
+Finally, we directly compared the bloodstream drug concentration predicted by the extended model with that of the base model using identical clearance parameters. This comparison was performed to assess how explicitly modelling absorption alters predicted drug dynamics. As shown in Figure Base vs Extended model (c=0.6, S0=100.0), the base model predicts an immediate maximum drug amount at $t = 0$, followed by exponential decay due to clearance. In contrast, the extended model shows a gradual rise in $A(t)$, reflecting the presence of the absorption compartment. The extended model consistently produces lower peak concentrations and later peak times than the base model. These differences demonstrate that incorporating absorption dynamics substantially changes predicted systemic drug levels over time.
+
+**Extended pill absorption model simulations.** (a) Time evolution of drug amount in the gastrointestinal compartment $S(t)$ and bloodstream compartment $A(t)$ for the extended model ($S_0 = 100$ mg, $c = 0.6$ hr$^{-1}$, $k_a = 1.2$ hr$^{-1}$). $S(t)$ decays exponentially as drug is absorbed, while $A(t)$ rises from zero to a delayed peak before declining due to clearance. (b) Sensitivity of bloodstream drug amount $A(t)$ to the absorption rate constant $k_a$ with clearance rate $c$ constant. Larger $k_a$ produces earlier and higher peaks with sharper concentration profiles, whereas smaller $k_a$ yields delayed, lower peaks and broader curves. (c) Comparison of base and extended model predictions for bloodstream drug amount $A(t)$ under identical clearance ($c = 0.6$ hr$^{-1}$). The base model predicts an immediate maximum at $t = 0$ followed by exponential decay, while the extended model predicts a delayed peak and smoother rise due to the intermediate absorption compartment.
+
+```{r fig1-extended, echo=FALSE, fig.cap="Time evolution of gut and bloodstream compartments. Time course of drug amount in the gastrointestinal compartment $S(t)$ (blue) and bloodstream compartment $A(t)$ (orange) for the extended model ($S_0 = 100$ mg, $c = 0.6$ hr$^{-1}$, $k_a = 1.2$ hr$^{-1}$). $S(t)$ decays exponentially as drug is absorbed, while $A(t)$ rises from zero to a delayed peak before declining due to clearance.", out.width="70%", fig.align='center', fig.pos='H'}
+knitr::include_graphics("figure1_extended_S_and_A.png")
+```
+
+```{r fig2-ka, echo=FALSE, fig.cap="Effect of absorption rate on drug concentration. Sensitivity of bloodstream drug amount $A(t)$ to the absorption rate constant $k_a$ with clearance rate $c = 0.6$ hr$^{-1}$ constant. Larger $k_a$ (red, $k_a = 2.0$) produces earlier and higher peaks with sharper concentration profiles, whereas smaller $k_a$ (blue, $k_a = 0.2$) yields delayed, lower peaks and broader curves.", out.width="70%", fig.align='center', fig.pos='H'}
+knitr::include_graphics("figure2_ka_overlay.png")
+```
+
+```{r fig3-comparison, echo=FALSE, fig.cap="Base vs Extended model comparison. Comparison of base and extended model predictions for bloodstream drug amount $A(t)$ under identical clearance ($c = 0.6$ hr$^{-1}$, $S_0 = 100$ mg). The base model (blue) predicts an immediate maximum at $t = 0$ followed by exponential decay, while the extended model (orange, $k_a = 1.2$ hr$^{-1}$) predicts a delayed peak and smoother rise due to the intermediate absorption compartment.", out.width="70%", fig.align='center', fig.pos='H'}
+knitr::include_graphics("figure3_base_vs_extended.png")
+```
+
 # References
-
-# Appendix: Codes and Supplementary files
-
-# Appenedix: Individual Contributions
