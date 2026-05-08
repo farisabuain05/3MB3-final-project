@@ -6,10 +6,6 @@ ka    <- 1.2     # absorption rate
 t_end <- 12      # hours
 time  <- seq(0, t_end, by = 0.01)
 
-S <- function(t, S0, ka) {
-  S0 * exp(-ka * t)
-}
-
 A_ext <- function(t, S0, ka, c) {
   (ka * S0 / (c - ka)) * (exp(-ka * t) - exp(-c * t))
 }
